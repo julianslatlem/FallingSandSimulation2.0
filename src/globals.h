@@ -1,27 +1,46 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <vector>
+#include <algorithm>
+#include <array>
 
-#define WIDTH 1280
-#define HEIGHT 720
+// Global constants. These are used throughout the program, and can be modified before building.
+constexpr int WIDTH = 1920;
+constexpr int HEIGHT = 1080;
+constexpr float GRAVITY = 9.81f;
+constexpr int PARTICLE_SIZE = 5;
 
-float gravity = 10.0f;
+constexpr int TARGET_FPS = 60;
+constexpr int TARGET_FRAME_TIME = 1000 / TARGET_FPS; // in milliseconds
 
-const int particleSize = 10;
-const int brushSize = 5;
+// Global variables. These are used throughout the program, and can be modified while the program is running.
+inline int brushSize = 5;
 
-struct particle_t {
+typedef struct color_t {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} color_t;
+
+// Particle colors.
+constexpr color_t sandColor[3] = {{246, 215, 176}, {236, 204, 162}, {225, 191, 146}};
+
+class Particle {
+public:
     uint8_t id;
     float lifeTime;
-    std::vector<std::vector<float>> velocity;
-    uint32_t color;
+    std::array<int, 2> position;
+    std::array<float, 2> velocity;
+    color_t color;
     bool updatedThisFrame;
+
+    virtual void update() = 0;
+    virtual void render(SDL_Renderer* renderer, int x, int y) = 0;
 };
 
-particle_t* worldParticleData = {0};
+inline Particle** worldParticleData;
 
-int mouse[2] = {0, 0};
-Uint32 mouseState;
+inline int mouse[2] = {0, 0};
+inline uint32_t mouseState;
 
 #endif //GLOBALS_H

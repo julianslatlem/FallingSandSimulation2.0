@@ -1,0 +1,5 @@
+#IDE junk:
+.idea/
+
+#CMake:
+build/
