@@ -12,6 +12,8 @@ include_directories(${SDL2_INCLUDE_DIR})
 add_executable(fallingSandSimulation
         src/main.cpp
         src/globals.h
-        src/sandParticle.h)
+        src/sandParticle.h
+        src/stoneParticle.h
+)
 
 target_link_libraries(fallingSandSimulation ${SDL2_LIBRARY} ${SDL2_Mixer_LIBRARY})

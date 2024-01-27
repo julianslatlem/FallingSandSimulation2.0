@@ -1,8 +1,10 @@
 #include <SDL.h>
 #include "globals.h"
 #include <random>
+#include <algorithm>
 
 #include "sandParticle.h"
+#include "stoneParticle.h"
 
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) return EXIT_FAILURE; // Initializes the SDL library.
@@ -43,6 +45,13 @@ int main(int argc, char* argv[]) {
             }
 
             mouseState = SDL_GetMouseState(&mouse[0], &mouse[1]);
+
+            if (e.type == SDL_KEYDOWN) {
+                if (e.key.keysym.sym == SDLK_TAB) {
+                    // Increment the current particle type index and wrap it around
+                    currentParticleTypeIndex = (currentParticleTypeIndex + 1) % particleTypes.size();
+                }
+            }
         }
 
         if ((mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) && mouse[0] >= 0 && mouse[0] < WIDTH && mouse[1] >= 0 && mouse[1] < HEIGHT) {
@@ -53,7 +62,13 @@ int main(int argc, char* argv[]) {
                         int brushX = (mouse[0] / PARTICLE_SIZE) + i;
                         int brushY = (mouse[1] / PARTICLE_SIZE) + j;
                         if (brushX >= 0 && brushX < WIDTH / PARTICLE_SIZE && brushY >= 0 && brushY < HEIGHT / PARTICLE_SIZE) {
-                            worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new SandParticle(brushX, brushY);
+                            if (worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] == nullptr) {
+                                if (particleTypes[currentParticleTypeIndex] == ParticleType::Sand) {
+                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new SandParticle(brushX, brushY);
+                                } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Stone) {
+                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new StoneParticle(brushX, brushY);
+                                }
+                            }
                         }
                     }
                 }
@@ -77,21 +92,6 @@ int main(int argc, char* argv[]) {
         // Clears the screen.
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
-        // // Goes through every particle in the world and renders it.
-        // for (int y = 0; y < (HEIGHT / PARTICLE_SIZE); y++) { // For every row of pixels.
-        //     for (int x = 0; x < (WIDTH / PARTICLE_SIZE); x++) { // For every pixel in the row.
-        //         Particle* particle = worldParticleData[y * (WIDTH / PARTICLE_SIZE) + x]; // Gets the particle at the current position.
-        //         if (particle != nullptr && particle->id != 0) {
-        //             if (!particle->updatedThisFrame) { particle->update(); particle->render(renderer, x, y); }
-        //         }
-        //     }
-        // }
-        //
-        // for (int i = 0; i < (WIDTH / PARTICLE_SIZE) * (HEIGHT / PARTICLE_SIZE); i++) {
-        //     Particle* particle = worldParticleData[i];
-        //     if (particle != nullptr && particle->id != 0) particle->updatedThisFrame = false;
-        // }
 
         // Shuffle the indices.
         std::shuffle(indices.begin(), indices.end(), g);

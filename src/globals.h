@@ -1,7 +1,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <algorithm>
+#include <vector>
 #include <array>
 
 // Global constants. These are used throughout the program, and can be modified before building.
@@ -24,6 +24,7 @@ typedef struct color_t {
 
 // Particle colors.
 constexpr color_t sandColor[3] = {{246, 215, 176}, {236, 204, 162}, {225, 191, 146}};
+constexpr color_t stoneColor[3] = {{150, 150, 152}, {140, 140, 142}, {130, 130, 132}};
 
 class Particle {
 public:
@@ -39,6 +40,15 @@ public:
 };
 
 inline Particle** worldParticleData;
+
+enum class ParticleType {
+    Sand,
+    Stone
+};
+
+// Create a list of particle types
+inline std::vector<ParticleType> particleTypes = {ParticleType::Sand, ParticleType::Stone};
+inline int currentParticleTypeIndex = 0;
 
 inline int mouse[2] = {0, 0};
 inline uint32_t mouseState;
