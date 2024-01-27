@@ -25,6 +25,7 @@ typedef struct color_t {
 // Particle colors.
 constexpr color_t sandColor[3] = {{246, 215, 176}, {236, 204, 162}, {225, 191, 146}};
 constexpr color_t stoneColor[3] = {{150, 150, 152}, {140, 140, 142}, {130, 130, 132}};
+constexpr color_t waterColor[3] = {{0, 43, 96}, {1, 46, 102}, {2, 47, 102}};
 
 class Particle {
 public:
@@ -43,11 +44,12 @@ inline Particle** worldParticleData;
 
 enum class ParticleType {
     Sand,
-    Stone
+    Stone,
+    Water
 };
 
 // Create a list of particle types
-inline std::vector<ParticleType> particleTypes = {ParticleType::Sand, ParticleType::Stone};
+inline std::vector<ParticleType> particleTypes = {ParticleType::Sand, ParticleType::Stone, ParticleType::Water};
 inline int currentParticleTypeIndex = 0;
 
 inline int mouse[2] = {0, 0};

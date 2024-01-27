@@ -6,7 +6,7 @@
 class StoneParticle : public Particle {
 public:
     StoneParticle(int x, int y) {
-        id = 1;
+        id = 2;
         position = {x, y};
         velocity = {0, 0};
         color = stoneColor[rand() % 3];

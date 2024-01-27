@@ -5,6 +5,7 @@
 
 #include "sandParticle.h"
 #include "stoneParticle.h"
+#include "waterParticle.h"
 
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) return EXIT_FAILURE; // Initializes the SDL library.
@@ -67,6 +68,8 @@ int main(int argc, char* argv[]) {
                                     worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new SandParticle(brushX, brushY);
                                 } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Stone) {
                                     worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new StoneParticle(brushX, brushY);
+                                } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Water) {
+                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new WaterParticle(brushX, brushY);
                                 }
                             }
                         }

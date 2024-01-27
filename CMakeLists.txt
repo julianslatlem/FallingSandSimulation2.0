@@ -14,6 +14,7 @@ add_executable(fallingSandSimulation
         src/globals.h
         src/sandParticle.h
         src/stoneParticle.h
+        src/waterParticle.h
 )
 
 target_link_libraries(fallingSandSimulation ${SDL2_LIBRARY} ${SDL2_Mixer_LIBRARY})
