@@ -8,7 +8,7 @@
 constexpr int WIDTH = 1920;
 constexpr int HEIGHT = 1080;
 constexpr float GRAVITY = 9.81f;
-constexpr int PARTICLE_SIZE = 3;
+constexpr int PARTICLE_SIZE = 4;
 
 constexpr int TARGET_FPS = 60;
 constexpr int TARGET_FRAME_TIME = 1000 / TARGET_FPS; // in milliseconds
@@ -25,7 +25,9 @@ typedef struct color_t {
 // Particle colors.
 constexpr color_t sandColor[3] = {{246, 215, 176}, {236, 204, 162}, {225, 191, 146}};
 constexpr color_t stoneColor[3] = {{150, 150, 152}, {140, 140, 142}, {130, 130, 132}};
-constexpr color_t waterColor[3] = {{0, 43, 96}, {1, 46, 102}, {2, 47, 102}};
+constexpr color_t gunpowderColor[3] = {{30, 30, 30}, {25, 25, 25}, {20, 20, 20}};
+constexpr color_t fireColor[3] = {{255, 0, 0}, {255, 90, 0}, {255, 154, 0}};
+//constexpr color_t waterColor[3] = {{0, 43, 96}, {1, 46, 102}, {2, 47, 102}};
 
 class Particle {
 public:
@@ -45,11 +47,13 @@ inline Particle** worldParticleData;
 enum class ParticleType {
     Sand,
     Stone,
-    Water
+    Gunpowder,
+    Fire,
+    //Water
 };
 
 // Create a list of particle types
-inline std::vector<ParticleType> particleTypes = {ParticleType::Sand, ParticleType::Stone, ParticleType::Water};
+inline std::vector<ParticleType> particleTypes = {ParticleType::Sand, ParticleType::Stone, ParticleType::Gunpowder, ParticleType::Fire};
 inline int currentParticleTypeIndex = 0;
 
 inline int mouse[2] = {0, 0};

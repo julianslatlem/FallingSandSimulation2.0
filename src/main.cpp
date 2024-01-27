@@ -5,7 +5,9 @@
 
 #include "sandParticle.h"
 #include "stoneParticle.h"
-#include "waterParticle.h"
+#include "gunpowderParticle.h"
+#include "fireParticle.h"
+//#include "waterParticle.h"
 
 void setPixel(SDL_Renderer* renderer, int x, int y, SDL_Color color) {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
@@ -102,8 +104,10 @@ int main(int argc, char* argv[]) {
                                     worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new SandParticle(brushX, brushY);
                                 } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Stone) {
                                     worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new StoneParticle(brushX, brushY);
-                                } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Water) {
-                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new WaterParticle(brushX, brushY);
+                                } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Gunpowder) {
+                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new GunpowderParticle(brushX, brushY);
+                                } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Fire) {
+                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new FireParticle(brushX, brushY);
                                 }
                             }
                         }
