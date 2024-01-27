@@ -7,6 +7,40 @@
 #include "stoneParticle.h"
 #include "waterParticle.h"
 
+void setPixel(SDL_Renderer* renderer, int x, int y, SDL_Color color) {
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderDrawPoint(renderer, x, y);
+}
+
+void drawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius) {
+    int x = radius;
+    int y = 0;
+    int err = 0;
+
+    SDL_Color color = {255, 255, 255, 255};
+
+    while (x >= y) {
+        setPixel(renderer, centerX + x, centerY + y, color);
+        setPixel(renderer, centerX + y, centerY + x, color);
+        setPixel(renderer, centerX - y, centerY + x, color);
+        setPixel(renderer, centerX - x, centerY + y, color);
+        setPixel(renderer, centerX - x, centerY - y, color);
+        setPixel(renderer, centerX - y, centerY - x, color);
+        setPixel(renderer, centerX + y, centerY - x, color);
+        setPixel(renderer, centerX + x, centerY - y, color);
+
+        if (err <= 0) {
+            y += 1;
+            err += 2*y + 1;
+        }
+
+        if (err > 0) {
+            x -= 1;
+            err -= 2*x + 1;
+        }
+    }
+}
+
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) return EXIT_FAILURE; // Initializes the SDL library.
 
@@ -111,6 +145,9 @@ int main(int argc, char* argv[]) {
             Particle* particle = worldParticleData[i];
             if (particle != nullptr && particle->id != 0) particle->updatedThisFrame = false;
         }
+
+        // Draw the brush at the current mouse position
+        drawCircle(renderer, mouse[0], mouse[1], brushSize * PARTICLE_SIZE);
 
         SDL_RenderPresent(renderer); // Displays the rendered pixel buffer to the screen.
 

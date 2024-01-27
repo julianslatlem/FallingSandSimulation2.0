@@ -8,7 +8,7 @@
 constexpr int WIDTH = 1920;
 constexpr int HEIGHT = 1080;
 constexpr float GRAVITY = 9.81f;
-constexpr int PARTICLE_SIZE = 5;
+constexpr int PARTICLE_SIZE = 3;
 
 constexpr int TARGET_FPS = 60;
 constexpr int TARGET_FRAME_TIME = 1000 / TARGET_FPS; // in milliseconds
