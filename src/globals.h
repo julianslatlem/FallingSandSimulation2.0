@@ -1,8 +1,10 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <vector>
-#include <array>
+#include <vector> // Includes the vector library for vectors.
+#include <array> // Includes the array library for arrays.
+#include <random> // Includes the random library for generating random numbers.
+#include <algorithm> // Includes the algorithm library for shuffling arrays.
 
 // Global constants. These are used throughout the program, and can be modified before building.
 constexpr int TARGET_FPS = 60;
@@ -19,6 +21,8 @@ inline int brushSize = 5;
 // The mouse position and state. The mouse position is updated every frame, and the mouse state is updated when the mouse is clicked.
 inline int mouse[2] = {0, 0};
 inline uint32_t mouseState;
+
+inline std::random_device rd; // A random device used to generate random numbers.
 
 // A color type that stores the red, green, and blue components of a color.
 typedef struct color_t {
@@ -44,6 +48,8 @@ public:
 
     virtual void update() = 0; // The simulation function for the particle. To be implemented by the child classes.
     virtual void render(SDL_Renderer* renderer, int x, int y) = 0; // The rendering function for the particle. To be implemented by the child classes.
+
+    virtual ~Particle() = default; // The destructor for the particle.
 };
 
 // The array of particles that make up the world. Defined as a pointer instead of an actual array to be more efficient.

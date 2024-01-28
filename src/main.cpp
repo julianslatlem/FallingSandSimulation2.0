@@ -1,7 +1,5 @@
 #include <SDL.h> // Includes the SDL library for creating windows and rendering graphics.
 #include "globals.h" // Includes the globals.h header file.
-#include <random> // Includes the random library for generating random numbers.
-#include <algorithm> // Includes the algorithm library for shuffling arrays.
 
 // Includes all particle types.
 #include "sandParticle.h"
@@ -30,7 +28,6 @@ int main(int argc, char* argv[]) {
     worldParticleData = new Particle*[(WIDTH / PARTICLE_SIZE) * (HEIGHT / PARTICLE_SIZE)]();
 
     // Generates a random seed to be used when generating random numbers.
-    std::random_device rd;
     std::mt19937 g(rd());
 
     // Creates a vector of indices to be shuffled later.
@@ -155,13 +152,11 @@ int main(int argc, char* argv[]) {
     return EXIT_SUCCESS;
 }
 
-
 // Sets the color of a pixel at the specified position.
 void setPixel(SDL_Renderer* renderer, const int x, const int y, const SDL_Color color) {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderDrawPoint(renderer, x, y);
 }
-
 
 // Draws the outline of a circle at the specified position, with the specified radius.
 void drawCircle(SDL_Renderer* renderer, const int centerX, const int centerY, const int radius) {
