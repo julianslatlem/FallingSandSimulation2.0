@@ -1,129 +1,103 @@
-#include <SDL.h>
-#include "globals.h"
-#include <random>
-#include <algorithm>
+#include <SDL.h> // Includes the SDL library for creating windows and rendering graphics.
+#include "globals.h" // Includes the globals.h header file.
+#include <random> // Includes the random library for generating random numbers.
+#include <algorithm> // Includes the algorithm library for shuffling arrays.
 
+// Includes all particle types.
 #include "sandParticle.h"
 #include "stoneParticle.h"
 #include "gunpowderParticle.h"
 #include "fireParticle.h"
-//#include "waterParticle.h"
 
-void setPixel(SDL_Renderer* renderer, int x, int y, SDL_Color color) {
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderDrawPoint(renderer, x, y);
-}
+// Defines the setPixel and drawCircle function.
+void setPixel(SDL_Renderer* renderer, int x, int y, SDL_Color color);
+void drawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius);
 
-void drawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius) {
-    int x = radius;
-    int y = 0;
-    int err = 0;
-
-    SDL_Color color = {255, 255, 255, 255};
-
-    while (x >= y) {
-        setPixel(renderer, centerX + x, centerY + y, color);
-        setPixel(renderer, centerX + y, centerY + x, color);
-        setPixel(renderer, centerX - y, centerY + x, color);
-        setPixel(renderer, centerX - x, centerY + y, color);
-        setPixel(renderer, centerX - x, centerY - y, color);
-        setPixel(renderer, centerX - y, centerY - x, color);
-        setPixel(renderer, centerX + y, centerY - x, color);
-        setPixel(renderer, centerX + x, centerY - y, color);
-
-        if (err <= 0) {
-            y += 1;
-            err += 2*y + 1;
-        }
-
-        if (err > 0) {
-            x -= 1;
-            err -= 2*x + 1;
-        }
-    }
-}
-
+// The main function. Where the program starts.
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) return EXIT_FAILURE; // Initializes the SDL library.
 
     // Creates a window.
     SDL_Window* window = SDL_CreateWindow("Falling Sand Simulation C++", SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
-    if (!window) { SDL_Quit(); return EXIT_FAILURE; } // Checks if the window was created successfully.
+    if (!window) { SDL_Quit(); return EXIT_FAILURE; } // Checks if the window was created successfully, and exits if not.
 
     // Creates a renderer.
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-    if (!renderer) { SDL_DestroyWindow(window); SDL_Quit(); return EXIT_FAILURE; } // Checks if the renerer was created successfully.
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) { SDL_DestroyWindow(window); SDL_Quit(); return EXIT_FAILURE; } // Checks if the renderer was created successfully, and exits if not.
 
-    worldParticleData = new Particle*[(WIDTH / PARTICLE_SIZE) * (HEIGHT / PARTICLE_SIZE)](); // Allocate memory for worldParticleData.
+    // Allocates memory for worldParticleData. Basically just sets the size of the array.
+    worldParticleData = new Particle*[(WIDTH / PARTICLE_SIZE) * (HEIGHT / PARTICLE_SIZE)]();
 
-    // Use a random number generator.
+    // Generates a random seed to be used when generating random numbers.
     std::random_device rd;
     std::mt19937 g(rd());
 
-    // Create a vector of indices
+    // Creates a vector of indices to be shuffled later.
     std::vector<int> indices((WIDTH / PARTICLE_SIZE) * (HEIGHT / PARTICLE_SIZE));
-    std::iota(indices.begin(), indices.end(), 0); // Fill it with consecutive numbers.
+    std::iota(indices.begin(), indices.end(), 0); // Fills indices with consecutive numbers.
 
     SDL_Event e;
     bool running = true;
-    while (running) { // Creates a game loop that runs until the user closes the window.
-        uint32_t startTime = SDL_GetTicks(); // Get the start time.
+
+    // Creates a loop that runs until running is false.
+    while (running) {
+        const uint32_t startTime = SDL_GetTicks(); // Get the start time.
 
         while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) running = false; // Checks if the user closed the window.
+            if (e.type == SDL_QUIT) running = false; // Sets running to false if the user closes the window.
 
-            // Handle mouse wheel event.
+            // Handles mouse wheel events.
             if (e.type == SDL_MOUSEWHEEL) {
-                // Increase or decrease brushSize based on the amount scrolled.
+                // Increases or decreases brushSize based on the amount scrolled.
                 brushSize += e.wheel.y;
-                // Ensure brushSize is within a certain range, for example, 1 to 100.
-                brushSize = std::max(1, std::min(brushSize, 100));
+                // Ensures brushSize is within the range [0, 100].
+                brushSize = std::max(0, std::min(brushSize, 100));
             }
 
+            // Gets the mouse position and state.
             mouseState = SDL_GetMouseState(&mouse[0], &mouse[1]);
 
+            // Checks if the user has pressed a key.
             if (e.type == SDL_KEYDOWN) {
+                // Checks if the key is tab.
                 if (e.key.keysym.sym == SDLK_TAB) {
-                    // Increment the current particle type index and wrap it around
-                    currentParticleTypeIndex = (currentParticleTypeIndex + 1) % particleTypes.size();
+                    // Cycles through the different particles.
+                    currentParticleTypeIndex = (currentParticleTypeIndex + 1) % static_cast<int>(particleTypes.size());
                 }
             }
         }
 
-        if ((mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) && mouse[0] >= 0 && mouse[0] < WIDTH && mouse[1] >= 0 && mouse[1] < HEIGHT) {
+        // Checks if the user is pressing any mouse buttons.
+        if (mouseState) {
             for (int i = -brushSize; i <= brushSize; i++) {
                 for (int j = -brushSize; j <= brushSize; j++) {
-                    // Check if the current position is within a circle of radius brushSize.
                     if (i * i + j * j <= brushSize * brushSize) {
-                        int brushX = (mouse[0] / PARTICLE_SIZE) + i;
-                        int brushY = (mouse[1] / PARTICLE_SIZE) + j;
+                        const int brushX = (mouse[0] / PARTICLE_SIZE) + i;
+                        const int brushY = (mouse[1] / PARTICLE_SIZE) + j;
+
+                        // Checks if the brush is within the bounds of the screen.
                         if (brushX >= 0 && brushX < WIDTH / PARTICLE_SIZE && brushY >= 0 && brushY < HEIGHT / PARTICLE_SIZE) {
-                            if (worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] == nullptr) {
-                                if (particleTypes[currentParticleTypeIndex] == ParticleType::Sand) {
-                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new SandParticle(brushX, brushY);
-                                } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Stone) {
-                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new StoneParticle(brushX, brushY);
-                                } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Gunpowder) {
-                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new GunpowderParticle(brushX, brushY);
-                                } else if (particleTypes[currentParticleTypeIndex] == ParticleType::Fire) {
-                                    worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = new FireParticle(brushX, brushY);
+                            const int index = brushY * (WIDTH / PARTICLE_SIZE) + brushX; // Calculates the index of the particle at the current position.
+                            if ((mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) && worldParticleData[index] == nullptr) { // If the user is left clicking.
+                                switch (particleTypes[currentParticleTypeIndex]) { // Creates a new particle at the current position based on the current particle type.
+                                    case ParticleType::Sand:
+                                        worldParticleData[index] = new SandParticle(brushX, brushY);
+                                    break;
+                                    case ParticleType::Stone:
+                                        worldParticleData[index] = new StoneParticle(brushX, brushY);
+                                    break;
+                                    case ParticleType::Gunpowder:
+                                        worldParticleData[index] = new GunpowderParticle(brushX, brushY);
+                                    break;
+                                    case ParticleType::Fire:
+                                        worldParticleData[index] = new FireParticle(brushX, brushY);
+                                    break;
                                 }
                             }
-                        }
-                    }
-                }
-            }
-        }
-        else if ((mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)) && mouse[0] >= 0 && mouse[0] < WIDTH && mouse[1] >= 0 && mouse[1] < HEIGHT) {
-            for (int i = -brushSize; i <= brushSize; i++) {
-                for (int j = -brushSize; j <= brushSize; j++) {
-                    // Check if the current position is within a circle of radius brushSize.
-                    if (i * i + j * j <= brushSize * brushSize) {
-                        int brushX = (mouse[0] / PARTICLE_SIZE) + i;
-                        int brushY = (mouse[1] / PARTICLE_SIZE) + j;
-                        if (brushX >= 0 && brushX < WIDTH / PARTICLE_SIZE && brushY >= 0 && brushY < HEIGHT / PARTICLE_SIZE) {
-                            worldParticleData[brushY * (WIDTH / PARTICLE_SIZE) + brushX] = nullptr;
+                            else if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)) { // If the user is right clicking.
+                                worldParticleData[index] = nullptr; // Deletes the particle at the current position.
+                            }
                         }
                     }
                 }
@@ -134,45 +108,88 @@ int main(int argc, char* argv[]) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        // Shuffle the indices.
+        // Shuffles the indices.
         std::shuffle(indices.begin(), indices.end(), g);
 
-        // Go through every particle in the world in a random order and render it.
-        for (int i : indices) {
+        // Goes through every particle in the world in a random order and renders it.
+        for (const int i : indices) {
             Particle* particle = worldParticleData[i];
             if (particle != nullptr && particle->id != 0) {
                 if (!particle->updatedThisFrame) { particle->update(); particle->render(renderer, i % (WIDTH / PARTICLE_SIZE), i / (WIDTH / PARTICLE_SIZE)); }
             }
         }
 
-        for (int i : indices) {
+        // Goes through every particle in the world in a random order and updates it.
+        for (const int i : indices) {
             Particle* particle = worldParticleData[i];
             if (particle != nullptr && particle->id != 0) particle->updatedThisFrame = false;
         }
 
-        // Draw the brush at the current mouse position
+        // Draws the circle that shows the brush size at the current mouse position.
         drawCircle(renderer, mouse[0], mouse[1], brushSize * PARTICLE_SIZE);
 
-        SDL_RenderPresent(renderer); // Displays the rendered pixel buffer to the screen.
+        // Displays the rendered pixel buffer to the screen.
+        SDL_RenderPresent(renderer);
 
-        // Get the end time.
-        Uint32 endTime = SDL_GetTicks();
+        // Gets the end time.
+        const Uint32 endTime = SDL_GetTicks();
 
-        // Calculate the frame time.
-        Uint32 frameTime = endTime - startTime;
+        // Calculates the frame time.
+        const Uint32 frameTime = endTime - startTime;
 
-        // If the frame time is less than the target frame time, delay the game loop.
+        // Delays the program if the frame time is less than the target frame time.
         if (frameTime < TARGET_FRAME_TIME) {
             SDL_Delay(TARGET_FRAME_TIME - frameTime);
         }
     }
 
-    delete[] worldParticleData; // Deallocate memory for worldParticleData.
+    // Deallocates memory for worldParticleData.
+    delete[] worldParticleData;
 
     // Frees memory and quits SDL.
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
 
-    return EXIT_SUCCESS; // Exits the program.
+    // Exits the program.
+    return EXIT_SUCCESS;
+}
+
+
+// Sets the color of a pixel at the specified position.
+void setPixel(SDL_Renderer* renderer, const int x, const int y, const SDL_Color color) {
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderDrawPoint(renderer, x, y);
+}
+
+
+// Draws the outline of a circle at the specified position, with the specified radius.
+void drawCircle(SDL_Renderer* renderer, const int centerX, const int centerY, const int radius) {
+    int x = radius;
+    int y = 0;
+    int err = 0;
+
+    constexpr SDL_Color color = {255, 255, 255, 255};
+
+    while (x >= y) {
+        // Draw the eight octants of the circle.
+        setPixel(renderer, centerX + x, centerY + y, color);
+        setPixel(renderer, centerX + y, centerY + x, color);
+        setPixel(renderer, centerX - y, centerY + x, color);
+        setPixel(renderer, centerX - x, centerY + y, color);
+        setPixel(renderer, centerX - x, centerY - y, color);
+        setPixel(renderer, centerX - y, centerY - x, color);
+        setPixel(renderer, centerX + y, centerY - x, color);
+        setPixel(renderer, centerX + x, centerY - y, color);
+
+        if (err <= 0) {
+            y++;
+            err += 2*y + 1;
+        }
+
+        if (err > 0) {
+            x--;
+            err -= 2*x + 1;
+        }
+    }
 }

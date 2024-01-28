@@ -14,7 +14,6 @@ add_executable(fallingSandSimulation
         src/globals.h
         src/sandParticle.h
         src/stoneParticle.h
-        src/waterParticle.h
         src/gunpowderParticle.h
         src/fireParticle.h
 )
