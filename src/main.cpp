@@ -40,6 +40,8 @@ int main(int argc, char* argv[]) {
     SDL_Event e;
     bool running = true;
 
+    bool spacePressed = false; // A boolean that determines if the space key is pressed. Used to prevent the simulation from pausing and unpausing multiple times.
+
     // Creates a loop that runs until running is false.
     while (running) {
         const uint32_t startTime = SDL_GetTicks(); // Get the start time.
@@ -64,6 +66,17 @@ int main(int argc, char* argv[]) {
                 if (e.key.keysym.sym == SDLK_TAB) {
                     // Cycles through the different particles.
                     currentParticleTypeIndex = (currentParticleTypeIndex + 1) % static_cast<int>(particleTypes.size());
+                }
+                else if (e.key.keysym.sym == SDLK_SPACE && !spacePressed) {
+                    // Pauses or unpauses the simulation.
+                    paused = !paused;
+                    spacePressed = true;
+                }
+            }
+
+            if (e.type == SDL_KEYUP) {
+                if (e.key.keysym.sym == SDLK_SPACE) {
+                    spacePressed = false;
                 }
             }
 
@@ -92,7 +105,10 @@ int main(int argc, char* argv[]) {
         for (const int i : indices) {
             Particle* particle = worldParticleData[i];
             if (particle != nullptr && particle->id != 0) {
-                if (!particle->updatedThisFrame) { particle->update(); particle->render(renderer, i % (WIDTH / PARTICLE_SIZE), i / (WIDTH / PARTICLE_SIZE)); }
+                if (!particle->updatedThisFrame) {
+                    if (!paused) particle->update();
+                    particle->render(renderer, i % (WIDTH / PARTICLE_SIZE), i / (WIDTH / PARTICLE_SIZE));
+                }
             }
         }
 

@@ -15,6 +15,9 @@ constexpr int HEIGHT = 1080; // The height of the window.
 constexpr float GRAVITY = 9.81f; // The gravity constant. Used for particles that are affected by gravity.
 constexpr int PARTICLE_SIZE = 4; // The size of each particle.
 
+// A boolean that determines if the simulation is paused or not.
+inline int paused = false;
+
 // Global variables. These are used throughout the program, and can be modified while the program is running.
 inline int brushSize = 5;
 
