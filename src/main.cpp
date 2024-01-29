@@ -11,6 +11,9 @@
 void setPixel(SDL_Renderer* renderer, int x, int y, SDL_Color color);
 void drawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius);
 
+// Defines the interpolate function. Used for drawing the particles in an interpolated way.
+void interpolate(int x1, int y1, int x2, int y2);
+
 // The main function. Where the program starts.
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) return EXIT_FAILURE; // Initializes the SDL library.
@@ -21,7 +24,7 @@ int main(int argc, char* argv[]) {
     if (!window) { SDL_Quit(); return EXIT_FAILURE; } // Checks if the window was created successfully, and exits if not.
 
     // Creates a renderer.
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) { SDL_DestroyWindow(window); SDL_Quit(); return EXIT_FAILURE; } // Checks if the renderer was created successfully, and exits if not.
 
     // Allocates memory for worldParticleData. Basically just sets the size of the array.
@@ -63,42 +66,19 @@ int main(int argc, char* argv[]) {
                     currentParticleTypeIndex = (currentParticleTypeIndex + 1) % static_cast<int>(particleTypes.size());
                 }
             }
+
+            // Checks if the user has pressed any mouse button this frame.
+            if (e.type == SDL_MOUSEBUTTONDOWN) {
+                lastMouse[0] = mouse[0]; // Updates the last mouse position.
+                lastMouse[1] = mouse[1];
+            }
         }
 
         // Checks if the user is pressing any mouse buttons.
         if (mouseState) {
-            for (int i = -brushSize; i <= brushSize; i++) {
-                for (int j = -brushSize; j <= brushSize; j++) {
-                    if (i * i + j * j <= brushSize * brushSize) {
-                        const int brushX = (mouse[0] / PARTICLE_SIZE) + i;
-                        const int brushY = (mouse[1] / PARTICLE_SIZE) + j;
-
-                        // Checks if the brush is within the bounds of the screen.
-                        if (brushX >= 0 && brushX < WIDTH / PARTICLE_SIZE && brushY >= 0 && brushY < HEIGHT / PARTICLE_SIZE) {
-                            const int index = brushY * (WIDTH / PARTICLE_SIZE) + brushX; // Calculates the index of the particle at the current position.
-                            if ((mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) && worldParticleData[index] == nullptr) { // If the user is left clicking.
-                                switch (particleTypes[currentParticleTypeIndex]) { // Creates a new particle at the current position based on the current particle type.
-                                    case ParticleType::Sand:
-                                        worldParticleData[index] = new SandParticle(brushX, brushY);
-                                    break;
-                                    case ParticleType::Stone:
-                                        worldParticleData[index] = new StoneParticle(brushX, brushY);
-                                    break;
-                                    case ParticleType::Gunpowder:
-                                        worldParticleData[index] = new GunpowderParticle(brushX, brushY);
-                                    break;
-                                    case ParticleType::Fire:
-                                        worldParticleData[index] = new FireParticle(brushX, brushY);
-                                    break;
-                                }
-                            }
-                            else if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)) { // If the user is right clicking.
-                                worldParticleData[index] = nullptr; // Deletes the particle at the current position.
-                            }
-                        }
-                    }
-                }
-            }
+            interpolate(lastMouse[0], lastMouse[1], mouse[0], mouse[1]);
+            lastMouse[0] = mouse[0];
+            lastMouse[1] = mouse[1];
         }
 
         // Clears the screen.
@@ -186,5 +166,54 @@ void drawCircle(SDL_Renderer* renderer, const int centerX, const int centerY, co
             x--;
             err -= 2*x + 1;
         }
+    }
+}
+
+// An interpolation function that relies on Bresenham's line algorithm.
+void interpolate(int x1, int y1, const int x2, const int y2) {
+    int dx = abs(x2 - x1);
+    int dy = abs(y2 - y1);
+    const int sx = (x1 < x2) ? 1 : -1;
+    const int sy = (y1 < y2) ? 1 : -1;
+    int err = dx - dy;
+
+    while (true) {
+        for (int i = -brushSize; i <= brushSize; i++) {
+            for (int j = -brushSize; j <= brushSize; j++) {
+                if (i * i + j * j <= brushSize * brushSize) {
+                    const int brushX = (x1 / PARTICLE_SIZE) + i;
+                    const int brushY = (y1 / PARTICLE_SIZE) + j;
+
+                    // Checks if the brush is within the bounds of the screen.
+                    if (brushX >= 0 && brushX < WIDTH / PARTICLE_SIZE && brushY >= 0 && brushY < HEIGHT / PARTICLE_SIZE) {
+                        const int index = brushY * (WIDTH / PARTICLE_SIZE) + brushX; // Calculates the index of the particle at the current position.
+                        if ((mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) && worldParticleData[index] == nullptr) { // If the user is left clicking.
+                            switch (particleTypes[currentParticleTypeIndex]) { // Creates a new particle at the current position based on the current particle type.
+                                case ParticleType::Sand:
+                                    worldParticleData[index] = new SandParticle(brushX, brushY);
+                                break;
+                                case ParticleType::Stone:
+                                    worldParticleData[index] = new StoneParticle(brushX, brushY);
+                                break;
+                                case ParticleType::Gunpowder:
+                                    worldParticleData[index] = new GunpowderParticle(brushX, brushY);
+                                break;
+                                case ParticleType::Fire:
+                                    worldParticleData[index] = new FireParticle(brushX, brushY);
+                                break;
+                            }
+                        }
+                        else if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)) { // If the user is right clicking.
+                            worldParticleData[index] = nullptr; // Deletes the particle at the current position.
+                        }
+                    }
+                }
+            }
+        }
+
+        if (x1 == x2 && y1 == y2) break;
+        int e2 = 2 * err;
+        if (e2 > -dy) { err -= dy; x1 += sx; }
+        if (e2 < dx) { err += dx; y1 += sy; }
     }
 }

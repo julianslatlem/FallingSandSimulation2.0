@@ -22,6 +22,9 @@ inline int brushSize = 5;
 inline int mouse[2] = {0, 0};
 inline uint32_t mouseState;
 
+// The last mouse position. Used to determine the direction of the mouse movement.
+inline int lastMouse[2] = {0, 0};
+
 inline std::random_device rd; // A random device used to generate random numbers.
 
 // A color type that stores the red, green, and blue components of a color.
