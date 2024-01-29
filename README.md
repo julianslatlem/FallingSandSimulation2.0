@@ -1,10 +1,11 @@
-# Falling Sand Simulation
+# Falling Sand Simulation (C++ and Python)
 
 ## Description
 The goal of this project was to recreate the famous game **_Powder Toy_**. <br>
 This simulation is of course way less complex than the original game, but it still has some interesting features. <br>
 
-The simulation is made in C++ using the SDL library for the graphics. <br>
+The first simulation is made in C++ using the SDL library for the graphics. <br>
+The second simulation is made in Python using the Pygame library for the graphics. <br>
 
 ## How to play
 Just place the particles on the screen and watch them interact with each other. <br>
@@ -14,7 +15,7 @@ Change brush size: [SCROLL UP/DOWN] <br>
 Change particle: [TAB] <br>
 Pause/unpause simulation: [SPACE]
 
-## How to build
+## How to build (C++)
 To build the project, you'll need to have a cmake installed. <br>
 Once you have that, you can run the following commands in the terminal: <br>
 ```bash
@@ -45,9 +46,13 @@ Although it may seem complex, it is actually based on some simple rules. <br>
 To sum it up, the game consists of a grid of particles, each particle having a color and a custom update function attached. <br>
 The update function is called every frame, and it is responsible for the particle's behavior. <br>
 
-The sand particle for instance, has a simple update function that checks first if there is an empty space below it, and if not, it checks down to the left, and if that also is taken... you get the idea. <br>
+The sand particle for instance, has a simple update function that checks first if there is an empty space below it, and if not, it checks down to the left, and if that also is taken, it checks down to the right... you get the idea. <br>
+![Sand logic](.resources/sand-rules.png) <br>
+It also has velocity, of course, which basically just changes how many iterations into the future it does at a time, also known as _interpolating_; <br>
+so if the particle's velocity is 2, it will simulate it twice in a single update, making it fall twice as fast. <br>
+At least that's the gist of it.
 
-The fire is also quite simple, as the way it spreads is simply by checking the id of the surrounding particles, and if it is a flammable material, it will turn it into fire. <br>
+The fire is also quite simple, as the way it spreads is simply by checking the id of the surrounding particles, and if it is a flammable material, it will turn it into fire.
 
 ## The advantages of C++
 Well, first of all, it is fast. <br>
@@ -59,13 +64,6 @@ This, combined with the fact that C++ has a lot more features than Python, like 
 I will say however that Python is at a huge disadvantage here, as it isn't really meant for this kind of stuff. <br>
 Sure, it is a lot easier to write code in Python in _some_ instances, and it _can_ be easier to debug, but it's also just so slow that you can barely do anything with it apart from simple calculations and data-visualization. <br>
 
-## Sources
-During the making of this project, I used a lot of different sources to learn how to create a proper simulation. <br>
-Among these sources are the following: <br>
-- [The Powder Toy](https://powdertoy.co.uk/) - The original game that inspired this project.
-- [Some random YouTube video](https://www.youtube.com/watch?v=VLZjd_Y1gJ8) - This video was the first thing I watched when I started this project, and it helped me understand the basics of how to create a simulation like this.
-- [GitHub Copilot](https://copilot.github.com/) - I used this quite a bit, both for auto-completion, and for getting ideas on how to implement certain features.
-
 ## Conclusion
 All in all, I think this project was a success. <br>
 It was a lot of fun to make, and I learned a lot about these kinds of simulations in the process. <br>
@@ -76,3 +74,10 @@ I also think that this project is a good example of how much of a difference the
 ![Screenshot 1](screenshots/sand.png)
 ![Screenshot 1](screenshots/gunpowder.png)
 ![Screenshot 1](screenshots/fire.png)
+
+## Sources
+During the making of this project, I used a lot of different sources to learn how to create a proper simulation. <br>
+Among these sources are the following: <br>
+- [The Powder Toy](https://powdertoy.co.uk/) - The original game that inspired this project.
+- [Some random YouTube video](https://www.youtube.com/watch?v=VLZjd_Y1gJ8) - This video was the first thing I watched when I started this project, and it helped me understand the basics of how to create a simulation like this.
+- [GitHub Copilot](https://copilot.github.com/) - I used this quite a bit, both for auto-completion, and for getting ideas on how to implement certain features.
