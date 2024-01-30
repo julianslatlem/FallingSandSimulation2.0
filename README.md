@@ -32,7 +32,8 @@ But the rest of the folders are all required for the project to build properly.
 
 ## How to build (C++)
 To build the project, you'll need to have a cmake installed. <br>
-Once you have that, you can run the following commands in the terminal: <br>
+You'll also need SDL2 installed on your system in order to run the program. <br>
+Once you have all that, you can run the following commands in the terminal: <br>
 ```bash
 mkdir build
 cd build
