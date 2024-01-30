@@ -10,7 +10,14 @@ public:
         id = 1;
         position = {x, y};
         velocity = {};
-        color = sandColor[rand() % 3];
+
+        color_t newSandColor = sandColor[rand() % 3];
+
+        newSandColor.r += static_cast<uint8_t>(sandColorMask);
+        newSandColor.g += static_cast<uint8_t>(sandColorMask);
+        newSandColor.b += static_cast<uint8_t>(sandColorMask);
+
+        color = newSandColor;
     }
 
     std::default_random_engine eng{rd()}; // A random engine used to generate random numbers.
@@ -80,6 +87,14 @@ public:
 
         const SDL_Rect rect = {x * PARTICLE_SIZE, y * PARTICLE_SIZE, PARTICLE_SIZE, PARTICLE_SIZE};
         SDL_RenderFillRect(renderer, &rect);
+    }
+
+    void updateColor() override {
+        sandColorMask += 0.000001f;
+
+        if (sandColorMask >= 10.0f) {
+            sandColorMask = -20.0f;
+        }
     }
 };
 

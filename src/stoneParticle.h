@@ -23,6 +23,10 @@ public:
         const SDL_Rect rect = {x * PARTICLE_SIZE, y * PARTICLE_SIZE, PARTICLE_SIZE, PARTICLE_SIZE};
         SDL_RenderFillRect(renderer, &rect);
     }
+
+    void updateColor() override {
+        // Do nothing, as the stone particle does not change color.
+    }
 };
 
 #endif //STONEPARTICLE_H

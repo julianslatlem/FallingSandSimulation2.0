@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
             Particle* particle = worldParticleData[i];
             if (particle != nullptr && particle->id != 0) {
                 if (!particle->updatedThisFrame) {
-                    if (!paused) particle->update();
+                    if (!paused) { particle->update(); particle->updateColor(); }
                     particle->render(renderer, i % (WIDTH / PARTICLE_SIZE), i / (WIDTH / PARTICLE_SIZE));
                 }
             }
