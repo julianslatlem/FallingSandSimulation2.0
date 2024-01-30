@@ -7,6 +7,9 @@ This simulation is of course way less complex than the original game, but it sti
 The first simulation is made in C++ using the SDL library for the graphics. <br>
 The second simulation is made in Python using the Pygame library for the graphics. <br>
 
+It's also worth noting that this README is mainly based on the C++ version of the project, as it is the one I spent the most time on. <br>
+And not all things here apply to the Python version, like, for instance, the variables section.
+
 ## How to play
 Just place the particles on the screen and watch them interact with each other. <br>
 Place particle: [LEFT MOUSE BUTTON] <br>
@@ -53,6 +56,14 @@ so if the particle's velocity is 2, it will simulate it twice in a single update
 At least that's the gist of it.
 
 The fire is also quite simple, as the way it spreads is simply by checking the id of the surrounding particles, and if it is a flammable material, it will turn it into fire.
+
+# More on the Python version
+The Python version of this project is a lot simpler than the C++ version, as it is just a single file, and it doesn't have any of the fancy features that the C++ version has. <br>
+The reason for this was because Python is hard to make these kinds of simulations in, as it is just _that_ slow, but also because I like C++ more, and put a lot more time into it that the Python version. <br>
+
+The python version is _bad_, to say the least. <br>
+And there were some things I needed to change from the C++ version in order to make it work. <br>
+For instance, I couldn't use the updatedThisFrame variable, as it would be too slow; so instead, I opted to just limit the movement direction of the particles to only be down, this means fire is not possible in the current simulation. <br>
 
 ## The advantages of C++
 Well, first of all, it is fast. <br>
