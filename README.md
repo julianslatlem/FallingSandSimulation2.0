@@ -72,7 +72,7 @@ At least that's the gist of it.
 
 The fire is also quite simple, as the way it spreads is simply by checking the id of the surrounding particles, and if it is a flammable material, it will turn it into fire.
 
-# More on the Python version
+## More on the Python version
 The Python version of this project is a lot simpler than the C++ version, as it is just a single file, and it doesn't have any of the fancy features that the C++ version has. <br>
 The reason for this was because Python is hard to make these kinds of simulations in, as it is just _that_ slow, but also because I like C++ more, and put a lot more time into it that the Python version. <br>
 
