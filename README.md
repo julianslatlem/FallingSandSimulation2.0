@@ -25,6 +25,7 @@ Pause/unpause simulation: [SPACE]
 - **python_src/** - Contains the source code for the Python version.
 - **deps/** - Contains all external dependencies for the C++ version.
 - **CMakeLists.txt** - The CMake file for building the C++ version.
+- **cmake_modules/** - Contains some CMake modules used for building the C++ version.
 
 It goes without saying that you can delete the screenshots and the .resources folders without affecting the actual project, if you so wish. <br>
 But the rest of the folders are all required for the project to build properly.
