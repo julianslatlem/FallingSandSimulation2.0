@@ -61,7 +61,7 @@ public:
             }
         }
 
-        // Check for empty spaces below and to the sides of the particle
+        // The x-directions to check for empty spaces around the particle. (down, down-left, down-right)
         std::array<int, 3> directions = {-1, 0, 1};
         std::shuffle(directions.begin(), directions.end(), eng); // Shuffles the directions array.
 

@@ -18,6 +18,17 @@ Change brush size: [SCROLL UP/DOWN] <br>
 Change particle: [TAB] <br>
 Pause/unpause simulation: [SPACE]
 
+## Directory structure
+- **.resources/** - Just a hidden folder containing some images used in this README.
+- **screenshots/** - Contains some screenshots of the simulation.
+- **src/** - Contains the source code for the C++ version.
+- **python_src/** - Contains the source code for the Python version.
+- **deps/** - Contains all external dependencies for the C++ version.
+- **CMakeLists.txt** - The CMake file for building the C++ version.
+
+It goes without saying that you can delete the screenshots and the .resources folders without affecting the actual project, if you so wish. <br>
+But the rest of the folders are all required for the project to build properly.
+
 ## How to build (C++)
 To build the project, you'll need to have a cmake installed. <br>
 Once you have that, you can run the following commands in the terminal: <br>
@@ -32,13 +43,13 @@ This is a cross-platform method, so it should work on both Linux and Windows, as
 although on Windows, it seems to not work correctly unless you are using CLion for some reason.
 
 ## Variables
-If you were to actually build the project yourself, there are a few variables that you can change in the code to alter the behavior of the simulation. <br>
+If you were to actually build the project yourself, there are a few constants that you can change in the code to alter the behavior of the simulation. <br>
 
 Why would you want to do this? <br>
 Well, because you can, of course. <br>
 
-You can find the variables in the "src/globals.h" file. <br>
-Here, you have variables such as:
+You can find the constants in the "src/globals.h" file. <br>
+Here, you have constants such as:
 - **WIDTH, HEIGHT** - The size of the window, in pixels.
 - **PARTICLE_SIZE** - The size of each particle, in pixels.
 - **TARGET_FPS** - The target framerate of the simulation.
