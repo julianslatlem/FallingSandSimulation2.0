@@ -44,6 +44,8 @@ This will create an executable in the build folder. <br>
 This is a cross-platform method, so it should work on both Linux and Windows, assuming you have a C++ compiler installed,
 although on Windows, it seems to not work correctly unless you are using CLion for some reason.
 
+If you have any issues with building or running the application, you can create a new issue in the issues tab of the GitHub project; or just ask me directly if possible.
+
 ## Variables
 If you were to actually build the project yourself, there are a few constants that you can change in the code to alter the behavior of the simulation. <br>
 
