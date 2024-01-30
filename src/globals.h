@@ -38,6 +38,7 @@ typedef struct color_t {
 // Colors for each particle to choose from randomly. Used to get variation in the particle colors.
 constexpr color_t sandColor[3] = {{246, 215, 176}, {236, 204, 162}, {225, 191, 146}};
 inline float sandColorMask{}; // A mask that is added to the sand color to modify it.
+inline int sandColorSwitch = 1;
 
 constexpr color_t stoneColor[3] = {{150, 150, 152}, {140, 140, 142}, {130, 130, 132}};
 constexpr color_t gunpowderColor[3] = {{30, 30, 30}, {25, 25, 25}, {20, 20, 20}};
@@ -55,8 +56,6 @@ public:
 
     virtual void update() {}; // The simulation function for the particle. To be implemented by the child classes.
     virtual void render(SDL_Renderer* renderer, int x, int y) {}; // The rendering function for the particle. To be implemented by the child classes.
-
-    virtual void updateColor() {}; // A function for changing the color of the particle over time. To be implemented by the child classes.
 
     virtual ~Particle() = default; // The destructor for the particle.
 };

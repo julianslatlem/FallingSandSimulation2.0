@@ -106,10 +106,18 @@ int main(int argc, char* argv[]) {
             Particle* particle = worldParticleData[i];
             if (particle != nullptr && particle->id != 0) {
                 if (!particle->updatedThisFrame) {
-                    if (!paused) { particle->update(); particle->updateColor(); }
+                    if (!paused) { particle->update(); }
                     particle->render(renderer, i % (WIDTH / PARTICLE_SIZE), i / (WIDTH / PARTICLE_SIZE));
                 }
             }
+        }
+
+        // Makes the color of the sand particles change slightly over time.
+        sandColorMask += 0.1f * static_cast<float>(sandColorSwitch);
+        if (sandColorMask >= 5.0f) {
+            sandColorSwitch = -1;
+        } else if (sandColorMask <= -15.0f) {
+            sandColorSwitch = 1;
         }
 
         // Goes through every particle in the world in a random order and updates it.

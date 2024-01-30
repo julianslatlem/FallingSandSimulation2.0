@@ -88,14 +88,6 @@ public:
         const SDL_Rect rect = {x * PARTICLE_SIZE, y * PARTICLE_SIZE, PARTICLE_SIZE, PARTICLE_SIZE};
         SDL_RenderFillRect(renderer, &rect);
     }
-
-    void updateColor() override {
-        sandColorMask += 0.000001f;
-
-        if (sandColorMask >= 10.0f) {
-            sandColorMask = -20.0f;
-        }
-    }
 };
 
 #endif //SANDPARTICLE_H
