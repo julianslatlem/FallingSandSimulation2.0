@@ -2,20 +2,23 @@ cmake_minimum_required(VERSION 3.12)
 project(fallingSandSimulation)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake_modules)
-
-set(SDL2_PATH "deps")
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIR})
 
 add_executable(fallingSandSimulation
-        src/main.cpp
-        src/globals.h
-        src/sandParticle.h
-        src/stoneParticle.h
-        src/gunpowderParticle.h
-        src/fireParticle.h
+    src/main.cpp
+    src/globals.h
+    src/sandParticle.h
+    src/stoneParticle.h
+    src/gunpowderParticle.h
+    src/fireParticle.h
 )
 
-target_link_libraries(fallingSandSimulation ${SDL2_LIBRARY} ${SDL2_Mixer_LIBRARY})
+target_include_directories(fallingSandSimulation PRIVATE
+    ${SDL2_INCLUDE_DIRS}
+)
+
+target_link_libraries(fallingSandSimulation PRIVATE
+    ${SDL2_LIBRARIES}
+)
